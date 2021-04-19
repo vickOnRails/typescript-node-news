@@ -10,6 +10,10 @@
   "author": "vickonrails <victorofoegbu0009@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@types/bcrypt": "^3.0.1",
+    "@types/bcryptjs": "^2.4.2",
+    "bcrypt": "^5.0.1",
+    "bcryptjs": "^2.4.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "mongoose": "^5.12.4"
