@@ -19,14 +19,18 @@ export const GetAllNews = async (req: Request, res: Response) => {
 };
 
 export const AddNews = async (req: Request, res: Response) => {
-  const { title, content, author } = req.body as INews;
+  const { title, content } = req.body as INews;
+
+  // FIXME: use appropriate type
+  // @ts-ignore
+  const { user } = req;
 
   try {
     const news = await News.create({
       _id: mongoose.Types.ObjectId(),
       title,
       content,
-      author,
+      author: user._id,
     });
 
     // FIXME: Get author Id from JWT token
@@ -38,7 +42,6 @@ export const AddNews = async (req: Request, res: Response) => {
         data: {
           title,
           content,
-          author,
         },
       })
     );
@@ -86,7 +89,10 @@ export const AddComments = async (req: Request, res: Response) => {
   const { newsId } = req.params;
 
   //FIXME: refactor to get user from jwt
-  const { content, author } = req.body;
+  const { content } = req.body;
+
+  // @ts-ignore
+  const { user } = req;
 
   // ensure the post their trying to post to exists
   try {
@@ -101,7 +107,7 @@ export const AddComments = async (req: Request, res: Response) => {
       _id: mongoose.Types.ObjectId(),
       content,
       news: newsId,
-      author,
+      author: user._id,
     });
 
     await comment.save();
@@ -112,7 +118,6 @@ export const AddComments = async (req: Request, res: Response) => {
         success: true,
         data: {
           content,
-          author,
         },
       })
     );

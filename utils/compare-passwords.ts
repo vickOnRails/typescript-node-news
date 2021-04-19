@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs";
 export const comparePasswords = async (password: string, user: any) => {
   try {
     const compareResult = await bcrypt.compare(password, user.password);
-    console.log(compareResult);
     return compareResult;
   } catch (err) {
     throw new Error(err.message);

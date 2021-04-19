@@ -5,6 +5,7 @@ import User from "../models/user.model";
 import { IUser } from "../types/IUser";
 import { comparePasswords } from "../utils/compare-passwords";
 import { encryptPassword } from "../utils/encrypt-password";
+import { generateJWT } from "../utils/generate-jwt";
 import { response } from "../utils/response";
 
 export const SignIn = async (req: Request, res: Response) => {
@@ -21,9 +22,8 @@ export const SignIn = async (req: Request, res: Response) => {
 
   // confirm user exists
   const user = await User.findOne({ email });
-  const passwordsMatch = await comparePasswords(password, user);
 
-  console.log(passwordsMatch);
+  const passwordsMatch = await comparePasswords(password, user);
 
   try {
     if (!user || !passwordsMatch) {
@@ -39,6 +39,9 @@ export const SignIn = async (req: Request, res: Response) => {
       response({
         success: true,
         message: "Login successfull",
+        data: {
+          jwt: generateJWT({ id: user._id }),
+        },
       })
     );
   } catch (err) {

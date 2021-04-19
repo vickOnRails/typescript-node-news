@@ -6,6 +6,7 @@ import {
   AddNews,
 } from "./controllers";
 import { SignIn, SignUp } from "./controllers/auth.controller";
+import { protect } from "./middleware/protect";
 
 const router = express.Router();
 
@@ -16,8 +17,11 @@ router.post("/auth/sign-in", SignIn);
 router.post("/auth/sign-up", SignUp);
 
 router.get("/news", GetAllNews);
-router.post("/news", AddNews);
+
 router.get("/news/:newsId", GetNewsDetails);
-router.post("/news/:newsId/comments", AddComments);
+
+// Protect the add comments and add news endpoints
+router.post("/news", protect, AddNews);
+router.post("/news/:newsId/comments", protect, AddComments);
 
 export default router;
