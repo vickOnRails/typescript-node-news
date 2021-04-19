@@ -16,8 +16,8 @@ const PORT = process.env.PORT || 5000;
 // start express app
 const app = express();
 
-// setup body parser to parse request body
-app.use(express.urlencoded({ extended: true }));
+// setup express to parse request body
+app.use(express.json());
 
 app.use("/api", appRoutes);
 

@@ -8,6 +8,7 @@ import {
 import { SignIn, SignUp } from "./controllers/auth.controller";
 
 const router = express.Router();
+
 // Authentication routes
 // News Routes
 
