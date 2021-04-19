@@ -18,5 +18,5 @@ app.get("/api", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Listening at port ${PORT}`);
+  console.log(`Listening at port ${PORT} now`);
 });
