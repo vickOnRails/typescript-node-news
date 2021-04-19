@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import mongoose from "mongoose";
 
 import User from "../models/user.model";
-import { IUser } from "../types/User";
+import { IUser } from "../types/IUser";
 import { comparePasswords } from "../utils/compare-passwords";
 import { encryptPassword } from "../utils/encrypt-password";
 import { response } from "../utils/response";

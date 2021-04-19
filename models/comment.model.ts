@@ -14,7 +14,7 @@ const commentSchema = new mongoose.Schema(
       rel: "News",
       required: true,
     },
-    body: {
+    content: {
       type: String,
       required: true,
     },

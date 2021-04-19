@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
-import bcrypt from "bcrypt";
 
-import { IUser } from "../types/User";
+import { IUser } from "../types/IUser";
 
 // TODO: Add comments to all these models
 const userSchema = new mongoose.Schema<IUser>(
