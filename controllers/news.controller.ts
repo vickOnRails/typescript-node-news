@@ -6,17 +6,42 @@ import Comment from "../models/comment.model";
 import { INews } from "../types/INews";
 import { response } from "../utils/response";
 
-export const GetAllNews = async (req: Request, res: Response) => {
-  const news = await News.find();
+/**
+ * Get All News
+ * @param {Request} req - request object
+ * @param {Response} res - response
+ * @returns {Object}
+ */
 
-  res.status(200).json(
-    response({
-      message: "News fetched",
-      success: true,
-      data: news,
-    })
-  );
+export const GetAllNews = async (req: Request, res: Response) => {
+  try {
+    // get all news
+    const news = await News.find();
+
+    // return news
+    res.status(200).json(
+      response({
+        message: "News fetched",
+        success: true,
+        data: news,
+      })
+    );
+  } catch (err) {
+    res.status(500).json(
+      response({
+        message: err.message,
+        success: false,
+      })
+    );
+  }
 };
+
+/**
+ * Add News
+ * @param {Request} req - request object
+ * @param {Response} res - response
+ * @returns {Object}
+ */
 
 export const AddNews = async (req: Request, res: Response) => {
   const { title, content } = req.body as INews;
@@ -26,6 +51,7 @@ export const AddNews = async (req: Request, res: Response) => {
   const { user } = req;
 
   try {
+    // create news
     const news = await News.create({
       _id: mongoose.Types.ObjectId(),
       title,
@@ -33,7 +59,6 @@ export const AddNews = async (req: Request, res: Response) => {
       author: user._id,
     });
 
-    // FIXME: Get author Id from JWT token
     await news.save();
     res.status(201).json(
       response({
@@ -55,12 +80,20 @@ export const AddNews = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Get News Details
+ * @param {Request} req - request object
+ * @param {Response} res - response
+ * @returns {Object}
+ */
 export const GetNewsDetails = async (req: Request, res: Response) => {
   const { newsId } = req.params;
 
   try {
+    // confirm news exists
     const newsExist = await News.exists({ _id: newsId });
 
+    // throw error if it doesn't
     if (!newsExist) {
       throw new Error("News does not exist");
     }
@@ -84,17 +117,23 @@ export const GetNewsDetails = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Add comments
+ * @param {Request} req - request object
+ * @param {Response} res - response
+ * @returns {Object}
+ */
 export const AddComments = async (req: Request, res: Response) => {
   // Ensure the user is signed In
   const { newsId } = req.params;
 
-  //FIXME: refactor to get user from jwt
   const { content } = req.body;
 
   // @ts-ignore
+  // FIXME: use appropriate types
   const { user } = req;
 
-  // ensure the post their trying to post to exists
+  // ensure a post exists before a comment can be added to it
   try {
     const newsExist = await News.findOne({ _id: newsId });
 
@@ -103,6 +142,7 @@ export const AddComments = async (req: Request, res: Response) => {
       throw new Error("News does not exist");
     }
 
+    // create comment
     const comment = await Comment.create({
       _id: mongoose.Types.ObjectId(),
       content,
@@ -110,6 +150,7 @@ export const AddComments = async (req: Request, res: Response) => {
       author: user._id,
     });
 
+    // save comment
     await comment.save();
 
     res.status(201).json(

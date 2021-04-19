@@ -8,9 +8,17 @@ import { encryptPassword } from "../utils/encrypt-password";
 import { generateJWT } from "../utils/generate-jwt";
 import { response } from "../utils/response";
 
+/**
+ * Sign In user
+ * @param {Request} req - request object
+ * @param {Response} res - response
+ * @returns {Object}
+ */
+
 export const SignIn = async (req: Request, res: Response) => {
   const { password, email } = req.body as IUser;
 
+  // ensure user sends email and password
   if (!password || !email) {
     res.status(400).json(
       response({
@@ -20,21 +28,35 @@ export const SignIn = async (req: Request, res: Response) => {
     );
   }
 
-  // confirm user exists
-  const user = await User.findOne({ email });
-
-  const passwordsMatch = await comparePasswords(password, user);
-
   try {
-    if (!user || !passwordsMatch) {
+    // confirm user exists
+    const user = await User.findOne({ email });
+    const authErrMessage = `This user does not exist. Please create an account`;
+
+    // return error if user does not exist
+    if (!user) {
       return res.status(401).json(
         response({
           success: false,
-          message: "This user does not exist. Please create an account",
+          message: authErrMessage,
         })
       );
     }
 
+    // check user password against provided one
+    const passwordsMatch = await comparePasswords(password, user);
+
+    // return error if passwords don't match
+    if (!passwordsMatch) {
+      return res.status(401).json(
+        response({
+          success: false,
+          message: authErrMessage,
+        })
+      );
+    }
+
+    // success ✅
     res.status(200).json(
       response({
         success: true,
@@ -54,13 +76,19 @@ export const SignIn = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Sign Up user
+ * @param {Request} req - request object
+ * @param {Response} res - response
+ * @returns {Object}
+ */
 export const SignUp = async (req: Request, res: Response) => {
-  // destructure parameters to create account
   const { email, password, fullname } = req.body as IUser;
 
+  // confirm user exists
   const userExists = await User.exists({ email });
 
-  // FIXME:
+  // throw error if the user already exists
   if (userExists) {
     res.status(422).json(
       response({
@@ -71,9 +99,11 @@ export const SignUp = async (req: Request, res: Response) => {
     );
   }
 
+  // encrypt the user password
   const { hashedPassword, salt } = await encryptPassword(password);
 
   try {
+    // create user
     const newUser = await User.create({
       _id: mongoose.Types.ObjectId(),
       email,
