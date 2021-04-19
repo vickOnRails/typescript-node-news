@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 
 import User from "../models/user.model";
 import { IUser } from "../types/User";
+import { response } from "../utils/response";
 
 export const SignIn = (req: Request, res: Response) => {
   res.status(200).json({
@@ -19,10 +20,15 @@ export const SignUp = async (req: Request, res: Response) => {
   const salt = "anything salty";
 
   // FIXME:
-  if (userExists)
-    throw new Error(
-      "A user already exists with this email address. Please log in"
+  if (userExists) {
+    res.status(422).json(
+      response({
+        success: false,
+        message:
+          "A user already exists with this email address. Please log in to continue",
+      })
     );
+  }
 
   try {
     const newUser = await User.create({
@@ -35,15 +41,22 @@ export const SignUp = async (req: Request, res: Response) => {
 
     await newUser.save();
 
-    res.status(201).json({
-      message: "User create successfully",
-      newUser,
-    });
+    return res.status(201).json(
+      response({
+        success: true,
+        data: {
+          user: {
+            email: newUser.email,
+            fullname: newUser.fullname,
+          },
+        },
+        message: "User create successfully",
+      })
+    );
   } catch (err) {
-    throw new Error(err.message);
+    response({
+      success: false,
+      message: err.message,
+    });
   }
-
-  res.status(200).json({
-    message: "Sign Up",
-  });
 };
