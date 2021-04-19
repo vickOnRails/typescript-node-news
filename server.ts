@@ -1,9 +1,9 @@
 import express from "express";
 // import cors from "cors";
-// import dotenv from "dotenv";
+import dotenv from "dotenv";
 
 // Set configuration to allow parsing of .env variables
-// dotenv.config();
+dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 
