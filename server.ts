@@ -1,4 +1,5 @@
 import express from "express";
+import url from "url";
 import cors from "cors";
 import dotenv from "dotenv";
 import redis from "redis";
@@ -16,11 +17,13 @@ const PORT = process.env.PORT || 5000;
 
 // setup redis server
 
-export const client = redis.createClient({
-  host: process.env.REDIS_HOST,
-  password: process.env.REDIS_PASSWORD,
-  url: process.env.REDIS_URI,
-});
+const config = process.env.REDISCLOUD_URL
+  ? {
+      url: process.env.REDISCLOUD_URL,
+    }
+  : {};
+
+export const client = redis.createClient(config);
 
 // start express app
 const app = express();
