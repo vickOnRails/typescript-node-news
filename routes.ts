@@ -7,6 +7,7 @@ import {
 } from "./controllers";
 import { SignIn, SignUp } from "./controllers/auth.controller";
 import { protect } from "./middleware/protect";
+import { newsCache } from "./middleware/redis-cache";
 
 const router = express.Router();
 
@@ -25,7 +26,7 @@ router.post("/auth/sign-up", SignUp);
 // --------------------------------------------------------------------------------------------- //
 
 // route to get all news
-router.get("/news", GetAllNews);
+router.get("/news", newsCache, GetAllNews);
 
 // route to get single news details
 router.get("/news/:newsId", GetNewsDetails);

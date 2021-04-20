@@ -5,6 +5,7 @@ import News from "../models/news.model";
 import Comment from "../models/comment.model";
 import { INews } from "../types/INews";
 import { response } from "../utils/response";
+import { client } from "../server";
 
 /**
  * Get All News
@@ -17,6 +18,10 @@ export const GetAllNews = async (req: Request, res: Response) => {
   try {
     // get all news
     const news = await News.find();
+
+    if (news.length > 0) {
+      client.setex("news", 3600, JSON.stringify(news));
+    }
 
     // return news
     res.status(200).json(

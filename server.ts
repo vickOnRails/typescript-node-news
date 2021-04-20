@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import redis from "redis";
 
 import appRoutes from "./routes";
 import connectDb from "./db";
@@ -12,6 +13,10 @@ dotenv.config();
 connectDb();
 
 const PORT = process.env.PORT || 5000;
+
+// setup redis server
+
+export const client = redis.createClient();
 
 // start express app
 const app = express();
