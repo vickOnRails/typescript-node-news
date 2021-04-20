@@ -65,6 +65,7 @@ export const AddNews = async (req: Request, res: Response) => {
     });
 
     await news.save();
+
     res.status(201).json(
       response({
         success: true,
@@ -104,6 +105,8 @@ export const GetNewsDetails = async (req: Request, res: Response) => {
     }
 
     const news = await News.findById(newsId);
+
+    client.setex(`news-${newsId}`, 3600, JSON.stringify(news));
 
     res.status(200).json(
       response({
