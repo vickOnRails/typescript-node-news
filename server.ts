@@ -16,7 +16,11 @@ const PORT = process.env.PORT || 5000;
 
 // setup redis server
 
-export const client = redis.createClient({ port: 6379 });
+export const client = redis.createClient({
+  host: process.env.REDIS_HOST,
+  password: process.env.REDIS_PASSWORD,
+  url: process.env.REDIS_URI,
+});
 
 // start express app
 const app = express();
