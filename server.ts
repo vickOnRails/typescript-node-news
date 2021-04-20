@@ -19,7 +19,10 @@ const PORT = process.env.PORT || 5000;
 
 const config = process.env.REDISCLOUD_URL
   ? {
-      url: process.env.REDISCLOUD_URL,
+      url: process.env.REDIS_URL,
+      tls: {
+        rejectUnauthorized: false,
+      },
     }
   : {};
 
